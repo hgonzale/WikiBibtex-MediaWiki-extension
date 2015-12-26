@@ -410,7 +410,7 @@ class BibTex
 
 
 
-        $output = '<script language="javascript" src="'.$wgScriptPath.'/extensions/Biblio/toggle.js"></script>';
+        $output = '<script language="javascript" src="'.$wgScriptPath.'/extensions/WikiBibtex/toggle.js"></script>';
         $output .= $ref_body;
         if ($this->get_field('note') != '') {
 	        $note = $this->get_field('note');

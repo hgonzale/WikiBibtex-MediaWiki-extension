@@ -107,7 +107,7 @@ $wgExtensionCredits['validextensionclass'][] = array(
 
 
 // Bibtex parser
-require_once($IP .'/extensions/Biblio/bibtex.php');
+require_once($IP .'/extensions/WikiBibtex/bibtex.php');
 
 
 // Print only cited bibtex entries
