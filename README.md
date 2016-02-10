@@ -21,7 +21,7 @@ http://boolesrings.org/victoriagitman/2014/06/06/a-wikibibtex-extension-for-medi
 
 To activate the extension, you have to:
 
-1) Place files in the 'extensions/WikiBibtex' subdirectory of your
+1) Place files in the `extensions/WikiBibtex` subdirectory of your
 MediaWiki installation.
 
 2) Update your LocalSettings.php file with this line:
@@ -32,14 +32,14 @@ require_once( "$IP/extensions/WikiBibtex/WikiBibtex.php" );
 
 ## Features
 
-This module provides tags <cite> and <biblio>.  <cite> tags indicate a
+This module provides tags `<cite>` and `<biblio>`.  `<cite>` tags indicate a
 citation in the text, one or several keys, separated by a comma, are
 given.  These keys must be defined in the <biblio> section.  The
-<biblio> sections on the page and must come after the last citation.
-The <biblio> tag can contain either the bibtex entry itself or a link
+`<biblio>` sections on the page and must come after the last citation.
+The `<biblio>` tag can contain either the bibtex entry itself or a link
 to an interwiki 'database' page containing bibtex entries.  A bibtex
 'database' page is trying to simulate a bibtex file, and it is linked
-using the syntax @[[database]] within the <biblio> tag.  It must
+using the syntax `@[[database]]` within the `<biblio>` tag.  It must
 contain only bibtex entries (and HTML comments).
 
 
@@ -47,10 +47,10 @@ contain only bibtex entries (and HTML comments).
 
 The tag <biblio> accepts the following options:
 - **force** (default: *false*): The default is to display only cited
-  items. Set this option to 'true' to display all the items in the
+  items. Set this option to *true* to display all the items in the
   database.
 - **prefix** (default: *R*): Adds a prefix to the `<div id>` of each
-  entry. Useful when more than <biblio> tag is present in a single
+  entry. Useful when more than `<biblio>` tag is present in a single
   wiki page.
 
 
