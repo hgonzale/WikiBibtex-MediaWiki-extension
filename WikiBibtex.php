@@ -370,7 +370,7 @@ function Biblio_render_nocite($input, array $params, Parser $parser = null, PPFr
 // Conversion of the contents of <biblio> tags
 function Biblio_render_biblio($input, array $params, Parser $parser = null, PPFrame $frame)
 {
-    global $Biblio, $BiblioForce;
+    global $Biblio, $BiblioForce, $BiblioPrefix;
     $force = @isset($params['force']) ?
            ($params['force'] == "true") : $BiblioForce;
 
@@ -378,6 +378,6 @@ function Biblio_render_biblio($input, array $params, Parser $parser = null, PPFr
            $params['prefix'] : $BiblioPrefix;
 
     //$parser is passed forward to parse math content in entries
-    return $Biblio->render_biblio($input, $parser, $force);
+    return $Biblio->render_biblio($input, $parser, $force, $prefix);
 }
 ?>
