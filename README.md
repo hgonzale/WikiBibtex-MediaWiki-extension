@@ -25,7 +25,9 @@ To activate the extension, you have to:
 MediaWiki installation.
 
 2) Update your LocalSettings.php file with this line:
-```require_once( "$IP/extensions/WikiBibtex/WikiBibtex.php" );```
+```
+require_once( "$IP/extensions/WikiBibtex/WikiBibtex.php" );
+```
 
 
 ## Features
@@ -47,14 +49,15 @@ The tag <biblio> accepts the following options:
 - **force** (default: *false*): The default is to display only cited
   items. Set this option to 'true' to display all the items in the
   database.
-- **prefix** (default: *R*): Adds a prefix to the <div id> of each
+- **prefix** (default: *R*): Adds a prefix to the `<div id>` of each
   entry. Useful when more than <biblio> tag is present in a single
   wiki page.
 
 
 ## Example
 
-```<some wikitext>
+```
+<some wikitext>
 The result was published in <cite>Gitman:article2014</cite>, and
 similar results appeared in <cite>Hamkins:article2013</cite>
 <more wikitext>
