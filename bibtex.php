@@ -47,13 +47,13 @@ class BibTex
         // set fields
 	    foreach ($fields as $field) {
 	        $split = preg_split('/\s*=\s*/',$field, 2);
-	       if (count($split) >= 2) {
-		       $field_name = $split[0];
-	           $field_text = $split[1];
-               $field_name = trim(strtolower($field_name));
-	           $field_text = trim($field_text);
-	           $this->set_field($field_name, $field_text);
-	       }
+            if (count($split) >= 2) {
+                $field_name = $split[0];
+                $field_text = $split[1];
+                $field_name = trim(strtolower($field_name));
+                $field_text = trim($field_text);
+                $this->set_field($field_name, $field_text);
+            }
 	    }
 
 	    $this->parse($parser);
@@ -66,7 +66,7 @@ class BibTex
 
     function get_publishing_details()
     {
-       return $this->publishing_details;
+        return $this->publishing_details;
     }
 
     function get_field($field_name)
@@ -74,7 +74,7 @@ class BibTex
 	    if (array_key_exists($field_name, $this->fields))
 	        return $this->fields[$field_name];
 	    else
-	      return '';
+            return '';
     }
 
     function set_field($field_name,$value)
@@ -149,31 +149,31 @@ class BibTex
 
 	    // find all strings in brackets and place them in $matches array
 	    while ($i < $len) {
-	       // current character
-           $ch = substr($text, $i, 1);
-           $i++;
-           if ($ch == '{') {
-               // new match is found
-               if (!$count)  {
-                  $matches[$j] = '';
-                  $matches_int[$j] = '';
-               } else // '{' is internal to an existing match
-                   $matches_int[$j] .= $ch;
-               $count++;
-               $matches[$j] .= $ch;
-          } elseif ($ch == '}') {
-              $matches[$j] .= $ch;
-              $count--;
-              if (!$count)
-                 $j++;
-              else
-                $matches_int[$j].=$ch;
-         } else {
-            if ($count) {
+            // current character
+            $ch = substr($text, $i, 1);
+            $i++;
+            if ($ch == '{') {
+                // new match is found
+                if (!$count)  {
+                    $matches[$j] = '';
+                    $matches_int[$j] = '';
+                } else // '{' is internal to an existing match
+                    $matches_int[$j] .= $ch;
+                $count++;
                 $matches[$j] .= $ch;
-                $matches_int[$j] .= $ch;
+            } elseif ($ch == '}') {
+                $matches[$j] .= $ch;
+                $count--;
+                if (!$count)
+                    $j++;
+                else
+                    $matches_int[$j].=$ch;
+            } else {
+                if ($count) {
+                    $matches[$j] .= $ch;
+                    $matches_int[$j] .= $ch;
+                }
             }
-         }
 
 	    }
 
@@ -185,11 +185,11 @@ class BibTex
 	        if (strpos($matches[$i], '\\')===false)
 	            $text = str_replace($matches[$i], $matches_int[$i], $text);
 	        else { // if patters is found in foreign accents array, make the replacement
-	          if (isset($convert[$matches_int[$i]]))
-	              $str = $convert[$matches_int[$i]];
-	          else // if not found, leave it alone
-	            $str = $matches[$i];
-	          $text = str_replace($matches[$i],$str,$text);
+                if (isset($convert[$matches_int[$i]]))
+                    $str = $convert[$matches_int[$i]];
+                else // if not found, leave it alone
+                    $str = $matches[$i];
+                $text = str_replace($matches[$i],$str,$text);
 	        }
             $i++;
 
@@ -222,7 +222,7 @@ class BibTex
 			        $this->publishing_details.=':'.$this->fields['pages'];
 		        }
 	        } elseif ('' != $this->get_field('pages')) {
-		     $this->publishing_details = 'pp. '.$this->fields['pages'];
+                $this->publishing_details = 'pp. '.$this->fields['pages'];
 	        }
 	        break;
 
@@ -232,7 +232,7 @@ class BibTex
 
 	  	    if ('' != $this->publishing_details) {
 	  		    if ('' != $this->get_field('pages')) {
-	  		       $this->publishing_details.= ':'.$this->fields['pages'];
+                    $this->publishing_details.= ':'.$this->fields['pages'];
 	  		    }
 	  	    } elseif ('' != $this->get_field('pages')) {
 	  		    $this->publishing_details = ', pp. '.$this->fields['pages'];
@@ -272,7 +272,7 @@ class BibTex
             if ( '' != $this->get_field('type'))
                 $this->where_published = $this->fields['type'];
 		    else
-		      $this->where_published=$wbibmastersthesis;
+                $this->where_published=$wbibmastersthesis;
 		    $this->where_published .= ", ".$this->get_field('school');
 	        break;
 
@@ -287,7 +287,7 @@ class BibTex
 	    case 'book' :
 	 	    if ( '' != $this->get_field('volume') )
 	  	   	    $this->publishing_details .= "Vol. ".$this->fields['volume'].", ";
-		   if ( '' != $this->get_field('edition') )
+            if ( '' != $this->get_field('edition') )
 		        $this->publishing_details .= $this->fields['edition'].", ";
 		    $this->publishing_details .= $this->get_field('publisher');
 		    break;
@@ -303,7 +303,7 @@ class BibTex
 	    if ('' != $this->get_field('year'))
 	        $this->publishing_details .= ', '.$this->get_field('year');
         if ($this->publishing_details!="")
-             $this->publishing_details .='.';
+            $this->publishing_details .='.';
     }
 
 
@@ -315,63 +315,63 @@ class BibTex
 	    $len = strlen($text);
 
 	    while ($i < $len) {
-	       $field='';
+            $field='';
 
-	       // look for field name and text separator '='
-	       while ($i < $len) {
-	           $ch = substr($text,$i,1);
-		       $i++;
-		       $field .= $ch;
-		       if ('=' == $ch) {
-		           break;
-		       }
-	       }
+            // look for field name and text separator '='
+            while ($i < $len) {
+                $ch = substr($text,$i,1);
+                $i++;
+                $field .= $ch;
+                if ('=' == $ch) {
+                    break;
+                }
+            }
 
-	       // skip whitespace
-	       while ($i < $len) {
-	           $ch = substr($text,$i,1);
-		       $i++;
-		       if (' ' != $ch && "\t" != $ch) {
-	               break;
-		       }
-	       }
+            // skip whitespace
+            while ($i < $len) {
+                $ch = substr($text,$i,1);
+                $i++;
+                if (' ' != $ch && "\t" != $ch) {
+                    break;
+                }
+            }
 
-	       switch ($ch) {
-	       case '"': // look for ending '"'
-		       while ($i < $len) {
-		   	       $ch = substr($text,$i,1);
-			       $i++;
-			       if ('"' == $ch) {
-			           break;
-			       } else {
-			          $field .= $ch;
-			       }
-		       }
-		       break;
+            switch ($ch) {
+            case '"': // look for ending '"'
+                while ($i < $len) {
+                    $ch = substr($text,$i,1);
+                    $i++;
+                    if ('"' == $ch) {
+                        break;
+                    } else {
+                        $field .= $ch;
+                    }
+                }
+                break;
 
-	       case '{': // match up with '}'
-		       $brace_count = 1;
-		       while ($i < $len && $brace_count > 0) {
-		    	   $ch = substr($text,$i,1);
-			       switch ($ch) {
-			       case '{':
-			           $brace_count++;
-			           $field .= '{';
-			           break;
-			       case '}':
-			           $brace_count--;
-			           if ($brace_count > 0) {
-			     	       $field .= '}';
-			           }
-			           break;
-			       default:
-			           $field .= $ch;
-			       }
-			       $i++;
-		       }
-		       break;
+            case '{': // match up with '}'
+                $brace_count = 1;
+                while ($i < $len && $brace_count > 0) {
+                    $ch = substr($text,$i,1);
+                    switch ($ch) {
+                    case '{':
+                        $brace_count++;
+                        $field .= '{';
+                        break;
+                    case '}':
+                        $brace_count--;
+                        if ($brace_count > 0) {
+                            $field .= '}';
+                        }
+                        break;
+                    default:
+                        $field .= $ch;
+                    }
+                    $i++;
+                }
+                break;
 
-	       default: // numbers only or predefined string key
+            default: // numbers only or predefined string key
 		        $field.=$ch;
 		        while ($i < $len && ','!=($ch=substr($text,$i,1))) {
 			        if ('}' == $ch) { // hack to fix last entry
@@ -380,16 +380,16 @@ class BibTex
 			        $field .= $ch;
 			        $i++;
 		        }
-	       }
-	       if ('' != $field) {
-		       array_push($fields,$field);
-	       }
-	       $i++; // skip comma
+            }
+            if ('' != $field) {
+                array_push($fields,$field);
+            }
+            $i++; // skip comma
 	    }
 	    return $fields;
     }
 
-    function html($id)
+    function html($id, $prefix)
     {
         // gory html output
         global $wgScriptPath; //for path to js file
@@ -399,7 +399,7 @@ class BibTex
         if ( $this->get_field('author') != '')
 	        $ref_body .= $this->get_field('author').". ";
         else
-	      $ref_body .= $this->get_field('editor').". ";
+            $ref_body .= $this->get_field('editor').". ";
 
         $title = $this->get_field('title');
 
@@ -443,8 +443,8 @@ class BibTex
         }
 
         // link for bibtex
-        $output .= '<a class="bibtex" href="'. "javascript:toggle('".$id."')\">bibtex</a>";
-        $output .= "<div style='display:none; font-family: Monaco, Consolas, monospace; margin:15px;' id='".$id."'>".$this->get_content()."</div>";
+        $output .= '<a class="bibtex" href="'. "javascript:toggle('".$prefix.$id."')\">bibtex</a>";
+        $output .= "<div style='display:none; font-family: Monaco, Consolas, monospace; margin:15px;' id='".$prefix.$id."'>".$this->get_content()."</div>";
         return $output;
     }
 
@@ -459,12 +459,12 @@ class BibTex
 
 
 // converts bibtex entry to biblio item
-function renderBibtex( $input, $id, $parser)
+function renderBibtex($input, $id, $parser, $prefix)
 {
     $output = "";
 
     $b = new BibTex($input, $parser);
-    $output .= $b->html($id);
+    $output .= $b->html($id, $prefix);
     return $output;
 }
 ?>

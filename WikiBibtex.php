@@ -35,7 +35,7 @@
   ==================
 
   Brief instructions are given here. For more info, see
-    http://boolesrings.org/victoriagitman/2014/06/06/a-wikibibtex-extension-for-mediawiki
+  http://boolesrings.org/victoriagitman/2014/06/06/a-wikibibtex-extension-for-mediawiki
 
   Requirements:
 
@@ -43,16 +43,16 @@
 
   1) place the following files
 
-     1) WikiBibtex.php
-     2) bibtex.php
-     3) accents.php
-     4) toggle.js
+  1) WikiBibtex.php
+  2) bibtex.php
+  3) accents.php
+  4) toggle.js
 
-     in the 'extensions' subdirectory of your
-     MediaWiki installation.
+  in the 'extensions' subdirectory of your
+  MediaWiki installation.
 
   2) Update your LocalSettings.php file with this line:
-         require_once("extensions/WikiBibtex.php");
+  require_once("extensions/WikiBibtex.php");
 
   :
 
@@ -81,7 +81,7 @@
   some wikitext
   <biblio>
   @article{Gitman:article2014,...
-   ...
+  ...
   }
   @[[Bibtex]]
   }
@@ -112,6 +112,7 @@ require_once($IP .'/extensions/WikiBibtex/bibtex.php');
 
 // Print only cited bibtex entries
 $BiblioForce = false;
+$BiblioPrefix = "R";
 
 
 // Registration of this extension
@@ -154,7 +155,7 @@ class Biblio
             return $rev->getText(); // this will need to change to getContent() eventually (getText is deprecated)!!!
         } else {
             $this->errors[] = "<strong>Error</strong>: Bibliography page <strong>".$title. " </strong>does not exist.";
-             return NULL;
+            return NULL;
         }
     }
 
@@ -176,7 +177,7 @@ class Biblio
 	        $this->Citations[$key] = $index;
 	        return $index;
         } else
-	        return -1;
+              return -1;
     }
 
 
@@ -208,54 +209,54 @@ class Biblio
     {
         $result = array();
         foreach ($list as $ref) {
-        $matches = array();
+            $matches = array();
 
-        // links to pages containing bibtex entries must have form "bibtex:blah"
-        preg_match ('/\[(\[[^\]]*\])\]/', $ref, $matches);
+            // links to pages containing bibtex entries must have form "bibtex:blah"
+            preg_match ('/\[(\[[^\]]*\])\]/', $ref, $matches);
 
-        if (isset($matches[1])) {
-    	    // It is a link to a list of references
-    	    $link = $matches[1];
-            $name = $this->unbracket($link);
-            $title = Title::newFromText($name);
-         	$x = $this->fetch_page($title);
+            if (isset($matches[1])) {
+                // It is a link to a list of references
+                $link = $matches[1];
+                $name = $this->unbracket($link);
+                $title = Title::newFromText($name);
+                $x = $this->fetch_page($title);
 
-     	    // if linked to page exists
-           if ($x != NULL) {
-               //remove comments from start of bibtex database
-               $x=preg_replace('/<!--[\S|\s]*?-->/','',$x);
+                // if linked to page exists
+                if ($x != NULL) {
+                    //remove comments from start of bibtex database
+                    $x=preg_replace('/<!--[\S|\s]*?-->/','',$x);
 
-  	           foreach ($this->split_biblio($x) as $item) {
-  	               $result[] = array('ref' => $item);
-               }
-           }
-       } else
-  	       // A single reference
-  	       $result[] = array('ref' => $ref);
-       }
-       return $result;
+                    foreach ($this->split_biblio($x) as $item) {
+                        $result[] = array('ref' => $item);
+                    }
+                }
+            } else
+                // A single reference
+                $result[] = array('ref' => $ref);
+        }
+        return $result;
     }
 
     function parseBiblio($list)
-    {
-        $result = array();
+{
+    $result = array();
 
-        foreach ($list as $ref) {
-            $matches = array();
+    foreach ($list as $ref) {
+        $matches = array();
 
-            // bibtex entry should have format "blah {key, }"
-            if (preg_match ('/\s*[A-Za-z]+\s*{\s*([A-Za-z_0-9:]+)\s*,.+}$/sm',$ref['ref'],$matches) != 0) {
-                $key = $matches[1];
-	            $bibtex = '@'.$ref['ref']; // add '@' back into entry
-	            $x = array('key' => $key);
-                $x['bibtex'] = $bibtex;
-                $result[] = $x;
-            } else {
-                $this->errors[] = "<strong>Error</strong>: Entry <strong>".$ref['ref']." </strong>is invalid.";
-            }
-       }
-       return $result;
+        // bibtex entry should have format "blah {key, }"
+        if (preg_match ('/\s*[A-Za-z]+\s*{\s*([A-Za-z_0-9:]+)\s*,.+}$/sm',$ref['ref'],$matches) != 0) {
+            $key = $matches[1];
+            $bibtex = '@'.$ref['ref']; // add '@' back into entry
+            $x = array('key' => $key);
+            $x['bibtex'] = $bibtex;
+            $result[] = $x;
+        } else {
+            $this->errors[] = "<strong>Error</strong>: Entry <strong>".$ref['ref']." </strong>is invalid.";
+        }
     }
+    return $result;
+}
 
 
     // Conversion of the contents of <cite> tags
@@ -274,7 +275,7 @@ class Biblio
             $links = array();
             foreach ($list as $ent) {
 	            $link = $this->HtmlLink("#bibkey_$ent[1]", $ent[0]+1);
-	          $links[] = $link;
+                $links[] = $link;
             }
 
             return "[". implode(", ", $links) ."]";
@@ -290,7 +291,7 @@ class Biblio
 
     // Conversion of the contents of <biblio> tags
     //$parser is passed forward to parse math content in entries
-    function render_biblio($input, $parser, $force)
+    function render_biblio($input, $parser, $force, $prefix)
     {
         $refs = array();
         $keys = array();
@@ -303,7 +304,7 @@ class Biblio
 	        $bibtex = $ref['bibtex'];
 	        $index = $this->CitationIndex($key, $force);
             if ($index >= 0) {
-                $text = renderBibtex($bibtex, $index, $parser);
+                $text = renderBibtex($bibtex, $index, $parser, $prefix);
 	            $refs[] = array('index' => $index,
 	                            'key' => $key,
 	                            'text' => $text);
@@ -342,9 +343,9 @@ class Biblio
             $text = $ref['text'];
             $vkey = "<span style=\"color:#aaa\">[$key]</span>";
             $result[] = "<li id=\"bibkey_$key\" value=\"$index\"> $text \n</li>";
-       }
+        }
 
-       return $err_msg .'<ol>' . implode ("", $result) . '</ol>';
+        return $err_msg .'<ol>' . implode ("", $result) . '</ol>';
     }
 }
 
@@ -371,7 +372,10 @@ function Biblio_render_biblio($input, array $params, Parser $parser = null, PPFr
 {
     global $Biblio, $BiblioForce;
     $force = @isset($params['force']) ?
-              ($params['force'] == "true") : $BiblioForce;
+           ($params['force'] == "true") : $BiblioForce;
+
+    $prefix = @isset($params['prefix']) ?
+           $params['prefix'] : $BiblioPrefix;
 
     //$parser is passed forward to parse math content in entries
     return $Biblio->render_biblio($input, $parser, $force);
