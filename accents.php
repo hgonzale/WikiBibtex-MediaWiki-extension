@@ -56,6 +56,8 @@ $convert = array();
     $convert['\\accent\'27u']='&#367;';
     $convert['\\accent\'27U']='&#366;';
 
-
+    $convert['\\&']='&amp;';
+    $convert['--']='&ndash;';
+    $convert['---']='&mdash;';
 
 ?>
