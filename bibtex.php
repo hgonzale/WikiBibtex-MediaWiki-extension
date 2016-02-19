@@ -52,7 +52,7 @@ class BibTex
                 $field_text = $split[1];
                 $field_name = trim(strtolower($field_name));
                 $field_text = trim($field_text);
-                $this->set_field($field_name, $field_text);
+                $this->set_field($field_name, $this->parse_convert($field_text));
             }
 	    }
 
@@ -118,8 +118,8 @@ class BibTex
             } else {
                 $author_field = $last_author;
             }
-            // parse foreign accents
-            $author_field=$this->parse_accents($author_field);
+            // remove extra brackets
+            $author_field=$this->parse_brackets($author_field);
             $this->fields['author'] = $author_field;
         }
 
@@ -131,70 +131,47 @@ class BibTex
         //change '' to " because parser turns '' into <i>
         $title = preg_replace('/\'\'/','"',$title);
         $title = $parser->recursiveTagParse($title);
-        $title = $this->parse_accents($title);
+        $title = $this->parse_brackets($title);
         return $title;
     }
 
-    // removes forced capitalization brackets and parses foreign accents
-    function parse_accents($text)
+    // remove forced capitalization brackets
+    function parse_brackets($text)
     {
-        global $convert; // foreign accents array
         $i = 0; // characters in $text counter
         $len = strlen($text);
-        $matches = array(); // all matches {blah}
-        $matches_int = array(); // all matches blah (with brackets removed)
-        $mat = array(); // for a later preg_match
-        $j = 0; // elements of $matches counter
         $count = 0; // bracket counter
 
-	    // find all strings in brackets and place them in $matches array
-	    while ($i < $len) {
-            // current character
-            $ch = substr($text, $i, 1);
-            $i++;
-            if ($ch == '{') {
-                // new match is found
-                if (!$count)  {
-                    $matches[$j] = '';
-                    $matches_int[$j] = '';
-                } else // '{' is internal to an existing match
-                    $matches_int[$j] .= $ch;
-                $count++;
-                $matches[$j] .= $ch;
-            } elseif ($ch == '}') {
-                $matches[$j] .= $ch;
-                $count--;
-                if (!$count)
-                    $j++;
-                else
-                    $matches_int[$j].=$ch;
-            } else {
-                if ($count) {
-                    $matches[$j] .= $ch;
-                    $matches_int[$j] .= $ch;
-                }
-            }
+        $out = '';
+        while ($i < $len) {
+          // current character
+          $ch = $text[$i];
+          $i++;
+          if ($ch == '{') {
+            // new match is found
+            if ($count)
+              $out .= $ch;
+            $count++;
+          } elseif ($ch == '}') {
+            $count--;
+            if ($count)
+              $out .= $ch;
+          } else {
+            $out .= $ch;
+          }
+        }
 
-	    }
+        return $out;
+    }
 
-	    $i = 0; // $i is now a counter for number of matches
+    // latex to html symbol conversion
+    function parse_convert($text)
+    {
+        global $convert; // foreign accents array
 
-	    while($i < $j) {
-	        $str = '';
-	        // if this is a forced capitalization remove brackets
-	        if (strpos($matches[$i], '\\')===false)
-	            $text = str_replace($matches[$i], $matches_int[$i], $text);
-	        else { // if patters is found in foreign accents array, make the replacement
-                if (isset($convert[$matches_int[$i]]))
-                    $str = $convert[$matches_int[$i]];
-                else // if not found, leave it alone
-                    $str = $matches[$i];
-                $text = str_replace($matches[$i],$str,$text);
-	        }
-            $i++;
-
-	    }
-
+        foreach( $convert as $key => $value ) {
+            $text = str_replace( $key, $value, $text );
+        }
         return $text;
     }
 
