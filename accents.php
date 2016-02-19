@@ -1,64 +1,68 @@
 <?php
 
+$bkslash = '\\';
+$squote = "'";
+$dquote = '"';
+
 $convert = array();
-    $convert['\\"a']='&auml;';
-    $convert['\\"A']='&Auml;';
-    $convert['\\"e']='&euml;';
-    $convert['\\"E']='&Euml;';
-    $convert['\\"i']='&iuml;';
-    $convert['\\"I']='&Iuml;';
-    $convert['\\"o']='&ouml;';
-    $convert['\\"O']='&Ouml;';
-    $convert['\\"u']='&uuml;';
-    $convert['\\"U']='&Uuml;';
+$convert[$bkslash.$dquote.'a']='&auml;';
+$convert[$bkslash.$dquote.'A']='&Auml;';
+$convert[$bkslash.$dquote.'e']='&euml;';
+$convert[$bkslash.$dquote.'E']='&Euml;';
+$convert[$bkslash.$dquote.'i']='&iuml;';
+$convert[$bkslash.$dquote.'I']='&Iuml;';
+$convert[$bkslash.$dquote.'o']='&ouml;';
+$convert[$bkslash.$dquote.'O']='&Ouml;';
+$convert[$bkslash.$dquote.'u']='&uuml;';
+$convert[$bkslash.$dquote.'U']='&Uuml;';
 
-    $convert['\\\'a']='&aacute;';
-    $convert['\\\'A']='&Aacute;';
-    $convert['\\\'e']='&eacute;';
-    $convert['\\\'E']='&Eacute;';
-    $convert['\\\'i']='&iacute;';
-    $convert['\\\'I']='&Iacute;';
-    $convert['\\\'o']='&oacute;';
-    $convert['\\\'O']='&Oacute;';
-    $convert['\\\'u']='&uacute;';
-    $convert['\\\'U']='&Uacute;';
-    $convert['\\\'n']='&#324;';
-    $convert['\\\'N']='&#323;';
-    $convert['\\\'c']='&#263;';
-    $convert['\\\'C']='&#262;';
-    $convert['\\v C']='&#268;';
-    $convert['\\v c']='&#269;';
-    $convert['\\\'s']='&#347;';
-    $convert['\\\'S']='&#346;';
-    $convert['\\\'z']='&#378;';
-    $convert['\\\'Z']='&#377;';
+$convert[$bkslash.$squote.'a']='&aacute;';
+$convert[$bkslash.$squote.'A']='&Aacute;';
+$convert[$bkslash.$squote.'e']='&eacute;';
+$convert[$bkslash.$squote.'E']='&Eacute;';
+$convert[$bkslash.$squote.'i']='&iacute;';
+$convert[$bkslash.$squote.'I']='&Iacute;';
+$convert[$bkslash.$squote.'o']='&oacute;';
+$convert[$bkslash.$squote.'O']='&Oacute;';
+$convert[$bkslash.$squote.'u']='&uacute;';
+$convert[$bkslash.$squote.'U']='&Uacute;';
+$convert[$bkslash.$squote.'n']='&#324;';
+$convert[$bkslash.$squote.'N']='&#323;';
+$convert[$bkslash.$squote.'c']='&#263;';
+$convert[$bkslash.$squote.'C']='&#262;';
+$convert[$bkslash.$squote.'s']='&#347;';
+$convert[$bkslash.$squote.'S']='&#346;';
+$convert[$bkslash.$squote.'z']='&#378;';
+$convert[$bkslash.$squote.'Z']='&#377;';
 
-    $convert['\\l']='&#322;';
-    $convert['\\L']='&#321;';
+$convert[$bkslash.'l']='&#322;';
+$convert[$bkslash.'L']='&#321;';
 
-    $convert['\\v{c}']='&#269;';
-    $convert['\\v{c}']='&#268;';
-    $convert['\\v{d}']='&#271;';
-    $convert['\\v{D}']='&#270;';
-    $convert['\\v{e}']='&#283;';
-    $convert['\\v{E}']='&#282;';
-    $convert['\\v{n}']='&#328;';
-    $convert['\\v{N}']='&#327;';
-    $convert['\\v{r}']='&#345;';
-    $convert['\\v{R}']='&#344;';
-    $convert['\\v{s}']='&#353;';
-    $convert['\\v{S}']='&#352;';
-    $convert['\\v{t}']='&#357;';
-    $convert['\\v{T}']='&#356;';
-    $convert['\\v{z}']='&#382;';
-    $convert['\\v{Z}']='&#381;';
+$convert[$bkslash.'v C']='&#268;';
+$convert[$bkslash.'v c']='&#269;';
+$convert[$bkslash.'v{c}']='&#269;';
+$convert[$bkslash.'v{c}']='&#268;';
+$convert[$bkslash.'v{d}']='&#271;';
+$convert[$bkslash.'v{D}']='&#270;';
+$convert[$bkslash.'v{e}']='&#283;';
+$convert[$bkslash.'v{E}']='&#282;';
+$convert[$bkslash.'v{n}']='&#328;';
+$convert[$bkslash.'v{N}']='&#327;';
+$convert[$bkslash.'v{r}']='&#345;';
+$convert[$bkslash.'v{R}']='&#344;';
+$convert[$bkslash.'v{s}']='&#353;';
+$convert[$bkslash.'v{S}']='&#352;';
+$convert[$bkslash.'v{t}']='&#357;';
+$convert[$bkslash.'v{T}']='&#356;';
+$convert[$bkslash.'v{z}']='&#382;';
+$convert[$bkslash.'v{Z}']='&#381;';
 
-    $convert['\\accent\'27u']='&#367;';
-    $convert['\\accent\'27U']='&#366;';
+$convert[$bkslash.'accent'.$squote.'27u']='&#367;';
+$convert[$bkslash.'accent'.$squote.'27U']='&#366;';
 
-    $convert['\&']='&amp;';
-    // parsing in order, '---' must go before '--'
-    $convert['---']='&mdash;';
-    $convert['--']='&ndash;';
+$convert[$bkslash.'&']='&amp;';
+// parsing in order, hence '---' must go before '--'
+$convert['---']='&mdash;';
+$convert['--']='&ndash;';
 
 ?>
