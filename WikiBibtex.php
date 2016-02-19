@@ -98,11 +98,11 @@
 // Extension credits that will show up on Special:Version
 $wgExtensionCredits['validextensionclass'][] = array(
     'path'           => __FILE__,
-	'name'           => 'WikiBibtex',
-	'version'        => '1.0',
-	'author'         => 'Victoria Gitman',
-	'url'            => 'http://boolesrings.org/victoriagitman/2014/06/06/a-wikibibtex-extension-for-mediawiki/',
-	'descriptionmsg' => 'Creates citations and bibliography from bibtex entries' // Message key in i18n file.
+    'name'           => 'WikiBibtex',
+    'version'        => '1.0+',
+    'author'         => 'Victoria Gitman',
+    'url'            => 'http://boolesrings.org/victoriagitman/2014/06/06/a-wikibibtex-extension-for-mediawiki/',
+    'descriptionmsg' => 'Creates citations and bibliography from bibtex entries' // Message key in i18n file.
 );
 
 
@@ -173,9 +173,9 @@ class Biblio
             return $this->Citations[$key];
         } elseif ($create) {
             // ref was not cited yet
-	        $index = count($this->Citations);
-	        $this->Citations[$key] = $index;
-	        return $index;
+            $index = count($this->Citations);
+            $this->Citations[$key] = $index;
+            return $index;
         } else
               return -1;
     }
@@ -238,25 +238,25 @@ class Biblio
     }
 
     function parseBiblio($list)
-{
-    $result = array();
+    {
+        $result = array();
 
-    foreach ($list as $ref) {
-        $matches = array();
+        foreach ($list as $ref) {
+            $matches = array();
 
-        // bibtex entry should have format "blah {key, }"
-        if (preg_match ('/\s*[A-Za-z]+\s*{\s*([A-Za-z_0-9:]+)\s*,.+}$/sm',$ref['ref'],$matches) != 0) {
-            $key = $matches[1];
-            $bibtex = '@'.$ref['ref']; // add '@' back into entry
-            $x = array('key' => $key);
-            $x['bibtex'] = $bibtex;
-            $result[] = $x;
-        } else {
-            $this->errors[] = "<strong>Error</strong>: Entry <strong>".$ref['ref']." </strong>is invalid.";
+            // bibtex entry should have format "blah {key, }"
+            if (preg_match ('/\s*[A-Za-z]+\s*{\s*([A-Za-z_0-9:]+)\s*,.+}$/sm',$ref['ref'],$matches) != 0) {
+                $key = $matches[1];
+                $bibtex = '@'.$ref['ref']; // add '@' back into entry
+                $x = array('key' => $key);
+                $x['bibtex'] = $bibtex;
+                $result[] = $x;
+            } else {
+                $this->errors[] = "<strong>Error</strong>: Entry <strong>".$ref['ref']." </strong>is invalid.";
+            }
         }
+        return $result;
     }
-    return $result;
-}
 
 
     // Conversion of the contents of <cite> tags
@@ -274,7 +274,7 @@ class Biblio
             sort($list);
             $links = array();
             foreach ($list as $ent) {
-	            $link = $this->HtmlLink("#bibkey_$ent[1]", $ent[0]+1);
+                $link = $this->HtmlLink("#bibkey_$ent[1]", $ent[0]+1);
                 $links[] = $link;
             }
 
@@ -300,18 +300,18 @@ class Biblio
         $entries = $this->parseBiblio($list);
 
         foreach ($entries as $ref) {
-	        $key = $ref['key'];
-	        $bibtex = $ref['bibtex'];
-	        $index = $this->CitationIndex($key, $force);
+            $key = $ref['key'];
+            $bibtex = $ref['bibtex'];
+            $index = $this->CitationIndex($key, $force);
             if ($index >= 0) {
                 $text = renderBibtex($bibtex, $index, $parser, $prefix);
-	            $refs[] = array('index' => $index,
-	                            'key' => $key,
-	                            'text' => $text);
-		        $keys[] = $key;
-	        }
+                $refs[] = array('index' => $index,
+                                'key' => $key,
+                                'text' => $text);
+                $keys[] = $key;
+            }
 
-	    }
+        }
 
         // remove processed keys from Citations array
         foreach ($keys as $key)
@@ -320,9 +320,9 @@ class Biblio
         // print error for each unprocessed key
         foreach ($this->Citations as $key=>$index) {
             $text = $this->errorbox("<strong>Error:</strong> entry with key = ".$key." does not exist");
-	        $refs[] = array('index' => $index,
-	                        'key' => $key,
-	                        'text' => $text);
+            $refs[] = array('index' => $index,
+                            'key' => $key,
+                            'text' => $text);
         }
 
         sort($refs);
@@ -375,7 +375,7 @@ function Biblio_render_biblio($input, array $params, Parser $parser = null, PPFr
            ($params['force'] == "true") : $BiblioForce;
 
     $prefix = @isset($params['prefix']) ?
-           $params['prefix'] : $BiblioPrefix;
+            $params['prefix'] : $BiblioPrefix;
 
     //$parser is passed forward to parse math content in entries
     return $Biblio->render_biblio($input, $parser, $force, $prefix);
