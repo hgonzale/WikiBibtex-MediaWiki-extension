@@ -112,7 +112,7 @@ require_once($IP .'/extensions/WikiBibtex/bibtex.php');
 
 // Print only cited bibtex entries
 $BiblioForce = false;
-$BiblioPrefix = "R";
+$BiblioPrefix = "";
 
 
 // Registration of this extension
@@ -136,7 +136,8 @@ class Biblio
 {
     var $errors = array(); // records parsing errors
 
-    // Recover a link to an internal wiki page: take an expression of the form [blah] and return blah
+    // Recover a link to an internal wiki page:
+    // take an expression of the form [blah] and return blah
     function unbracket($link)
     {
         $matches = array();
@@ -152,9 +153,11 @@ class Biblio
 
         // if page does not exist report error
         if ($rev != NULL) {
-            return $rev->getText(); // this will need to change to getContent() eventually (getText is deprecated)!!!
+            // this will need to change to getContent() eventually (getText is deprecated)!!!
+            return $rev->getText();
         } else {
-            $this->errors[] = "<strong>Error</strong>: Bibliography page <strong>".$title. " </strong>does not exist.";
+            $this->errors[] = "<strong>Error</strong>: Bibliography page <strong>".$title
+                            ." </strong>does not exist.";
             return NULL;
         }
     }
@@ -163,7 +166,9 @@ class Biblio
     // Management of the citation indices
     // (order in which they appear in the text)
 
-    var $Citations = array(); // enumerates bibtex keys in order cited (if $BiblioForce = true, then uncited entries are continued in alphabetical order)
+    // enumerates bibtex keys in order cited
+    // if $BiblioForce = true, then uncited entries are continued in alphabetical order
+    var $Citations = array();
 
     // Find the number of the reference if already cited or,
     // if $create is true then assign a new one, otherwise return -1.
@@ -201,7 +206,8 @@ class Biblio
     // split entries using '@'
     function split_biblio($input)
     {
-        return preg_split("/\s*@\s*/", $input, -1, PREG_SPLIT_NO_EMPTY); // note that this removes @ from entry and will need to be added later
+        // note that this removes @ from entry and will need to be added later
+        return preg_split("/\s*@\s*/", $input, -1, PREG_SPLIT_NO_EMPTY);
     }
 
     // expandList expands references and links in the <biblio> tags
@@ -245,14 +251,16 @@ class Biblio
             $matches = array();
 
             // bibtex entry should have format "blah {key, }"
-            if (preg_match ('/\s*[A-Za-z]+\s*{\s*([A-Za-z_0-9:]+)\s*,.+}$/sm',$ref['ref'],$matches) != 0) {
+            if (preg_match ('/\s*[A-Za-z]+\s*{\s*([A-Za-z_0-9:]+)\s*,.+}$/sm',
+                            $ref['ref'],$matches) != 0) {
                 $key = $matches[1];
                 $bibtex = '@'.$ref['ref']; // add '@' back into entry
                 $x = array('key' => $key);
                 $x['bibtex'] = $bibtex;
                 $result[] = $x;
             } else {
-                $this->errors[] = "<strong>Error</strong>: Entry <strong>".$ref['ref']." </strong>is invalid.";
+                $this->errors[] = "<strong>Error</strong>: Entry <strong>".$ref['ref']
+                                ." </strong>is invalid.";
             }
         }
         return $result;
@@ -263,7 +271,8 @@ class Biblio
     function render_cite($input, $render = true)
     {
         $keys = array();
-        $keys = preg_split('/\s*,\s*/', $input, -1, PREG_SPLIT_NO_EMPTY); # split on anything that is not a possible character in key
+        // split on anything that is not a possible character in key
+        $keys = preg_split('/\s*,\s*/', $input, -1, PREG_SPLIT_NO_EMPTY);
         $list = array();
         foreach ($keys as $key) {
             $key = trim($key);
@@ -274,7 +283,7 @@ class Biblio
             sort($list);
             $links = array();
             foreach ($list as $ent) {
-                $link = $this->HtmlLink("#bibkey_$ent[1]", $ent[0]+1);
+                $link = $this->HtmlLink("#bibkey_".$ent[1], $ent[0]+1);
                 $links[] = $link;
             }
 
@@ -290,7 +299,7 @@ class Biblio
     }
 
     // Conversion of the contents of <biblio> tags
-    //$parser is passed forward to parse math content in entries
+    // $parser is passed forward to parse math content in entries
     function render_biblio($input, $parser, $force, $prefix)
     {
         $refs = array();
@@ -319,7 +328,8 @@ class Biblio
 
         // print error for each unprocessed key
         foreach ($this->Citations as $key=>$index) {
-            $text = $this->errorbox("<strong>Error:</strong> entry with key = ".$key." does not exist");
+            $text = $this->errorbox("<strong>Error:</strong> entry with key = ".$key
+                                    ." does not exist");
             $refs[] = array('index' => $index,
                             'key' => $key,
                             'text' => $text);
