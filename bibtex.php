@@ -196,7 +196,7 @@ class BibTex
 
             if ('' != $this->publishing_details) {
                 if ('' != $this->get_field('pages')) {
-                    $this->publishing_details.=':'.$this->fields['pages'];
+                    $this->publishing_details .=':'.$this->fields['pages'];
                 }
             } elseif ('' != $this->get_field('pages')) {
                 $this->publishing_details = 'pp. '.$this->fields['pages'];
@@ -209,17 +209,17 @@ class BibTex
 
             if ('' != $this->publishing_details) {
                 if ('' != $this->get_field('pages')) {
-                    $this->publishing_details.= ':'.$this->fields['pages'];
+                    $this->publishing_details .= ':'.$this->fields['pages'];
                 }
             } elseif ('' != $this->get_field('pages')) {
-                $this->publishing_details = ', pp. '.$this->fields['pages'];
+                $this->publishing_details = 'pp. '.$this->fields['pages'];
             }
             break;
 
         case 'article':
             $journal = $this->get_field('journal');
 
-            $this->where_published=$journal.' ';
+            $this->where_published=$journal;
             $this->publishing_details=$this->get_field('volume');
 
             if ('' != $this->get_field('number')) {
@@ -271,16 +271,19 @@ class BibTex
         }
 
         if ('' != $this->get_field('address'))
-            $this->publishing_details .= ', '.$this->get_field('address');
-
+            if ('' != $this->publishing_details )
+                $this->publishing_details .= ', ';
+            $this->publishing_details .= $this->get_field('address');
 
         if ('' != $this->get_field('month'))
-            $this->publishing_details .= ', '.$this->get_field('month');
+            if ('' != $this->publishing_details )
+                $this->publishing_details .= ', ';
+            $this->publishing_details .= $this->get_field('month');
 
         if ('' != $this->get_field('year'))
-            $this->publishing_details .= ', '.$this->get_field('year');
-        if ($this->publishing_details!="")
-            $this->publishing_details .='.';
+            if ('' != $this->publishing_details )
+                $this->publishing_details .= ', ';
+            $this->publishing_details .= $this->get_field('year');
     }
 
 
@@ -371,6 +374,7 @@ class BibTex
         // gory html output
         global $wgScriptPath; //for path to js file
 
+        $sep = "&nbsp;&nbsp;";
         $ref_body = '';
 
         if ( $this->get_field('author') != '')
@@ -378,11 +382,13 @@ class BibTex
         else
             $ref_body .= $this->get_field('editor').". ";
 
-        $title = $this->get_field('title');
-
-        $ref_body .= "<i>".$title.".</i> ";
-        $ref_body .= $this->get_where_published();
-        $ref_body .= $this->get_publishing_details(). ' ';
+        $ref_body .= '&ldquo;'.$this->get_field('title').',&rdquo;';
+        if ('' != $this->get_where_published() ) {
+            $ref_body .= ' <i>'.$this->get_where_published().'</i>';
+        }
+        if( '' != $this->get_publishing_details() ) {
+            $ref_body .= ', ' . $this->get_publishing_details() . '.  ';
+        }
 
         $output = '<script language="javascript" src="'.$wgScriptPath
                  .'/extensions/WikiBibtex/toggle.js"></script>';
@@ -395,21 +401,21 @@ class BibTex
         // link for url
         if ($this->get_field('url') != '') {
             $url = $this->get_field('url');
-            $output .= '<a href="'.$url.'" class="extiw">www</a>&nbsp;&nbsp;&nbsp;';
+            $output .= '<a href="'.$url.'" class="extiw">www</a>'. $sep;
         }
 
         // like for arxiv
         if ($this->get_field('eprint') != '') {
             $eprint = $this->get_field('eprint');
             $output .= '<a href="http://arxiv.org/abs/'.$eprint
-                    .'" class="extiw">ar&chi;iv</a>&nbsp;&nbsp;&nbsp;';
+                    .'" class="extiw">arXiv</a>'. $sep;
         }
 
         // link for doi
         if ($this->get_field('doi') != '') {
             $doi = $this->get_field('doi');
             $output .= '<a href="http://dx.doi.org/'.$doi
-                    .'" class="extiw">DOI</a>&nbsp;&nbsp;&nbsp;';
+                    .'" class="extiw">DOI</a>'. $sep;
         }
 
         // link for MR
@@ -417,7 +423,7 @@ class BibTex
             $mr = $this->get_field('mrnumber');
             $mr = preg_replace('/^[^\d]*([0-9]+)\s.*$/','$1',$mr);
             $output .= '<a href="http://www.ams.org/mathscinet-getitem?mr='.$mr
-                    .'" class="extiw">MR</a>&nbsp;&nbsp;&nbsp;';
+                    .'" class="extiw">MR</a>'. $sep;
         }
 
         // link for bibtex
