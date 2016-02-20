@@ -421,9 +421,9 @@ class BibTex
         }
 
         // link for bibtex
-        $output .= '<a class="bibtex" href="'. "javascript:toggle('".$prefix.$id."')\">bibtex</a>";
+        $output .= '<a class="bibtex" href="'."javascript:toggle('".$prefix.$id."')".'">bibtex</a>';
         $output .= "<div style='display:none; font-family:Monaco,Consolas,monospace; margin:15px;'"
-                ."id='".$prefix.$id."'>".$this->get_content()."</div>";
+                ."id='".$prefix. $id."'>".$this->get_content()."</div>";
 
         return $output;
     }
@@ -441,10 +441,7 @@ class BibTex
 // converts bibtex entry to biblio item
 function renderBibtex($input, $id, $parser, $prefix)
 {
-    $output = "";
-
     $b = new BibTex($input, $parser);
-    $output .= $b->html($id, $prefix);
-    return $output;
+    return $b->html($id, $prefix);
 }
 ?>

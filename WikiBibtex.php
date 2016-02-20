@@ -174,7 +174,7 @@ class Biblio
     // if $create is true then assign a new one, otherwise return -1.
     function CitationIndex($key, $create = true, $prefix)
     {
-        if (!array_key_exists($prefix, $this->Citations)
+        if (!array_key_exists($prefix, $this->Citations))
             $this->Citations[$prefix] = array();
 
         if (array_key_exists($key, $this->Citations[$prefix])) {
@@ -182,7 +182,7 @@ class Biblio
             return $this->Citations[$prefix][$key];
         } elseif ($create) {
             // ref was not cited yet
-            $index = count($this->Citations[$prefix]);
+            $index = count($this->Citations[$prefix]) + 1;
             $this->Citations[$prefix][$key] = $index;
             return $index;
         } else {
@@ -288,7 +288,7 @@ class Biblio
             sort($list);
             $links = array();
             foreach ($list as $ent) {
-                $link = $this->HtmlLink("#bibkey_".$ent[1], $prefix.strval($ent[0]+1));
+                $link = $this->HtmlLink("#bibkey_".$ent[1], $prefix. $ent[0]);
                 $links[] = $link;
             }
 
@@ -329,10 +329,10 @@ class Biblio
 
         // remove processed keys from Citations array
         foreach ($keys as $key)
-            unset($this->Citations[$key]);
+            unset($this->Citations[$prefix][$key]);
 
         // print error for each unprocessed key
-        foreach ($this->Citations as $key=>$index) {
+        foreach ($this->Citations[$prefix] as $key=>$index) {
             $text = $this->errorbox("<strong>Error:</strong> entry with key = ".$key
                                     ." does not exist");
             $refs[] = array('index' => $index,
@@ -353,11 +353,12 @@ class Biblio
         $result = array();
 
         foreach ($refs as $ref) {
-            $index = $ref['index'] + 1;
+            //$index = $ref['index'];
             $key = $ref['key'];
             $text = $ref['text'];
             $vkey = '<span style="color:#aaa">['.$key.']</span>';
-            $result[] = '<li id="bibkey_'.$key.'" value="'.$index.'"> $text \n</li>';
+            //$result[] = '<li id="bibkey_'.$key.'" value="'.$index.'">'. $text .'</li>';
+            $result[] = '<li id="bibkey_'.$key.'">'. $text .'</li>';
         }
 
         return $err_msg .'<ol>' . implode ("", $result) . '</ol>';
