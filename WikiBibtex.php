@@ -372,7 +372,7 @@ $Biblio = new Biblio;
 // Conversion of the contents of <cite> tags
 function Biblio_render_cite($input, array $params, Parser $parser = null, PPFrame $frame)
 {
-    global $Biblio;
+    global $Biblio, $BiblioPrefix;
 
     $prefix = @isset($params['prefix']) ?
             $params['prefix'] : $BiblioPrefix;
@@ -383,7 +383,7 @@ function Biblio_render_cite($input, array $params, Parser $parser = null, PPFram
 // Conversion of the contents of <nocite> tags
 function Biblio_render_nocite($input, array $params, Parser $parser = null, PPFrame $frame)
 {
-    global $Biblio;
+    global $Biblio, $BiblioPrefix;
 
     $prefix = @isset($params['prefix']) ?
             $params['prefix'] : $BiblioPrefix;
