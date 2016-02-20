@@ -172,17 +172,22 @@ class Biblio
 
     // Find the number of the reference if already cited or,
     // if $create is true then assign a new one, otherwise return -1.
-    function CitationIndex($key, $create = true) {
-        if (array_key_exists($key, $this->Citations)) {
+    function CitationIndex($key, $create = true, $prefix)
+    {
+        if (!array_key_exists($prefix, $this->Citations)
+            $this->Citations[$prefix] = array();
+
+        if (array_key_exists($key, $this->Citations[$prefix])) {
             // ref was already cited
-            return $this->Citations[$key];
+            return $this->Citations[$prefix][$key];
         } elseif ($create) {
             // ref was not cited yet
-            $index = count($this->Citations);
-            $this->Citations[$key] = $index;
+            $index = count($this->Citations[$prefix]);
+            $this->Citations[$prefix][$key] = $index;
             return $index;
-        } else
-              return -1;
+        } else {
+            return -1;
+        }
     }
 
 
@@ -268,7 +273,7 @@ class Biblio
 
 
     // Conversion of the contents of <cite> tags
-    function render_cite($input, $render = true)
+    function render_cite($input, $render = true, $prefix)
     {
         $keys = array();
         // split on anything that is not a possible character in key
@@ -276,14 +281,14 @@ class Biblio
         $list = array();
         foreach ($keys as $key) {
             $key = trim($key);
-            $index = $this->CitationIndex($key, true);
+            $index = $this->CitationIndex($key, true, $prefix);
             $list[] = array($index, $key);
         }
         if ($render) {
             sort($list);
             $links = array();
             foreach ($list as $ent) {
-                $link = $this->HtmlLink("#bibkey_".$ent[1], $ent[0]+1);
+                $link = $this->HtmlLink("#bibkey_".$ent[1], $prefix.strval($ent[0]+1));
                 $links[] = $link;
             }
 
@@ -293,9 +298,9 @@ class Biblio
     }
 
     // Conversion of the contents of <nocite> tags
-    function render_nocite($input, $force)
+    function render_nocite($input, $force, $prefix)
     {
-        return $this->render_cite($input, false);
+        return $this->render_cite($input, false, $prefix);
     }
 
     // Conversion of the contents of <biblio> tags
@@ -311,7 +316,7 @@ class Biblio
         foreach ($entries as $ref) {
             $key = $ref['key'];
             $bibtex = $ref['bibtex'];
-            $index = $this->CitationIndex($key, $force);
+            $index = $this->CitationIndex($key, $force, $prefix);
             if ($index >= 0) {
                 $text = renderBibtex($bibtex, $index, $parser, $prefix);
                 $refs[] = array('index' => $index,
@@ -351,8 +356,8 @@ class Biblio
             $index = $ref['index'] + 1;
             $key = $ref['key'];
             $text = $ref['text'];
-            $vkey = "<span style=\"color:#aaa\">[$key]</span>";
-            $result[] = "<li id=\"bibkey_$key\" value=\"$index\"> $text \n</li>";
+            $vkey = '<span style="color:#aaa">['.$key.']</span>';
+            $result[] = '<li id="bibkey_'.$key.'" value="'.$index.'"> $text \n</li>';
         }
 
         return $err_msg .'<ol>' . implode ("", $result) . '</ol>';
@@ -367,14 +372,22 @@ $Biblio = new Biblio;
 function Biblio_render_cite($input, array $params, Parser $parser = null, PPFrame $frame)
 {
     global $Biblio;
-    return $Biblio->render_cite($input, true);
+
+    $prefix = @isset($params['prefix']) ?
+            $params['prefix'] : $BiblioPrefix;
+
+    return $Biblio->render_cite($input, true, $prefix);
 }
 
 // Conversion of the contents of <nocite> tags
 function Biblio_render_nocite($input, array $params, Parser $parser = null, PPFrame $frame)
 {
     global $Biblio;
-    return $Biblio->render_nocite($input, false);
+
+    $prefix = @isset($params['prefix']) ?
+            $params['prefix'] : $BiblioPrefix;
+
+    return $Biblio->render_nocite($input, false, $prefix);
 }
 
 // Conversion of the contents of <biblio> tags

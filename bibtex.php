@@ -380,14 +380,12 @@ class BibTex
 
         $title = $this->get_field('title');
 
-        $ref_body .= "<i>";
-        $ref_body .= $title.".</i> ";
+        $ref_body .= "<i>".$title.".</i> ";
         $ref_body .= $this->get_where_published();
         $ref_body .= $this->get_publishing_details(). ' ';
 
-
-
-        $output = '<script language="javascript" src="'.$wgScriptPath.'/extensions/WikiBibtex/toggle.js"></script>';
+        $output = '<script language="javascript" src="'.$wgScriptPath
+                 .'/extensions/WikiBibtex/toggle.js"></script>';
         $output .= $ref_body;
         if ($this->get_field('note') != '') {
 	        $note = $this->get_field('note');
@@ -403,25 +401,30 @@ class BibTex
         // like for arxiv
         if ($this->get_field('eprint') != '') {
             $eprint = $this->get_field('eprint');
-	        $output .= '<a href="http://arxiv.org/abs/'.$eprint.'" class="extiw">ar&chi;iv</a>&nbsp;&nbsp;&nbsp;';
+	        $output .= '<a href="http://arxiv.org/abs/'.$eprint
+                    .'" class="extiw">ar&chi;iv</a>&nbsp;&nbsp;&nbsp;';
         }
 
         // link for doi
         if ($this->get_field('doi') != '') {
 	        $doi = $this->get_field('doi');
-	        $output .= '<a href="http://dx.doi.org/'.$doi.'" class="extiw">DOI</a>&nbsp;&nbsp;&nbsp;';
+	        $output .= '<a href="http://dx.doi.org/'.$doi
+                    .'" class="extiw">DOI</a>&nbsp;&nbsp;&nbsp;';
         }
 
         // link for MR
         if ($this->get_field('mrnumber') != '') {
 	        $mr = $this->get_field('mrnumber');
 	        $mr = preg_replace('/^[^\d]*([0-9]+)\s.*$/','$1',$mr);
-	        $output .= '<a href="http://www.ams.org/mathscinet-getitem?mr='.$mr. '" class="extiw">MR</a>&nbsp;&nbsp;&nbsp;';
+	        $output .= '<a href="http://www.ams.org/mathscinet-getitem?mr='.$mr
+                    .'" class="extiw">MR</a>&nbsp;&nbsp;&nbsp;';
         }
 
         // link for bibtex
         $output .= '<a class="bibtex" href="'. "javascript:toggle('".$prefix.$id."')\">bibtex</a>";
-        $output .= "<div style='display:none; font-family: Monaco, Consolas, monospace; margin:15px;' id='".$prefix.$id."'>".$this->get_content()."</div>";
+        $output .= "<div style='display:none; font-family:Monaco,Consolas,monospace; margin:15px;'"
+                ."id='".$prefix.$id."'>".$this->get_content()."</div>";
+
         return $output;
     }
 
