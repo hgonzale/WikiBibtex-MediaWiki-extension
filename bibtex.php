@@ -17,36 +17,36 @@ class BibTex
     // class constructor parses bibtex entry
     function BibTex($contents, $parser)
     {
-	    $tmpcnt = $contents;
+        $tmpcnt = $contents;
 
-	    // remove \n and \r from entry
-	    $tmpcnt = $this->cleanLi($tmpcnt);
+        // remove \n and \r from entry
+        $tmpcnt = $this->cleanLi($tmpcnt);
 
-	    //initilize class variables
-	    $this->fields = array();
+        //initilize class variables
+        $this->fields = array();
         $where_published = '' ;
-	    $publishing_details = '';
+        $publishing_details = '';
 
         // remove @
-	    $tmpcnt = preg_replace('/@/', '', $tmpcnt);
+        $tmpcnt = preg_replace('/@/', '', $tmpcnt);
 
         // split entry into type, key, and rest
         list($type,$rest) = preg_split('/{/', $tmpcnt, 2);
-	    $this->type_specifier = strtolower($type);
-	    list($key_identifier, $rest) = explode(',', $rest, 2);
+        $this->type_specifier = strtolower($type);
+        list($key_identifier, $rest) = explode(',', $rest, 2);
 
-	    // add <br> line breaks to bibtex entry for printing and set $contents
-	    $contents = "@".$this->type_specifier." {".$key_identifier.",<br>".$rest;
+        // add <br> line breaks to bibtex entry for printing and set $contents
+        $contents = "@".$this->type_specifier." {".$key_identifier.",<br>".$rest;
         $contents = str_replace(array("\"", "'"), array("&quot;", "\'"), $contents);
         $contents = preg_replace("/\},/","}, <br>", $contents);
         $this->content = $contents;
 
-	    // split entry to fields
-	    $fields = $this->get_fields($rest);
+        // split entry to fields
+        $fields = $this->get_fields($rest);
 
         // set fields
-	    foreach ($fields as $field) {
-	        $split = preg_split('/\s*=\s*/',$field, 2);
+        foreach ($fields as $field) {
+            $split = preg_split('/\s*=\s*/',$field, 2);
             if (count($split) >= 2) {
                 $field_name = $split[0];
                 $field_text = $split[1];
@@ -54,14 +54,14 @@ class BibTex
                 $field_text = trim($field_text);
                 $this->set_field($field_name, $this->parse_convert($field_text));
             }
-	    }
+        }
 
-	    $this->parse($parser);
+        $this->parse($parser);
     }
 
     function get_where_published()
     {
-	    return $this->where_published;
+        return $this->where_published;
     }
 
     function get_publishing_details()
@@ -71,9 +71,9 @@ class BibTex
 
     function get_field($field_name)
     {
-	    if (array_key_exists($field_name, $this->fields))
-	        return $this->fields[$field_name];
-	    else
+        if (array_key_exists($field_name, $this->fields))
+            return $this->fields[$field_name];
+        else
             return '';
     }
 
@@ -178,107 +178,107 @@ class BibTex
     // fill in generic fields
     function parse($parser)
     {
-	    $wbibmastersthesis = "Master's Thesis";
+        $wbibmastersthesis = "Master's Thesis";
         $wbibphdthesis = "Ph.D. Thesis";
         $wbibtechreport = "Technical Report";
         $wbibunpublished = "Unpublished";
 
-	    $this->parse_author();
+        $this->parse_author();
 
-	    //parse math in title and booktitle using $parser
-	    $this->set_field('title', $this->parse_title($this->get_field('title'), $parser));
-	    $this->set_field('booktitle', $this->parse_title($this->get_field('booktitle'), $parser));
+        //parse math in title and booktitle using $parser
+        $this->set_field('title', $this->parse_title($this->get_field('title'), $parser));
+        $this->set_field('booktitle', $this->parse_title($this->get_field('booktitle'), $parser));
 
-	    switch (trim($this->type_specifier)) {
-	    case 'inproceedings':
-	        $this->where_published = $this->get_field('booktitle');
-	        $this->publishing_details = $this->get_field('volume');
+        switch (trim($this->type_specifier)) {
+        case 'inproceedings':
+            $this->where_published = $this->get_field('booktitle');
+            $this->publishing_details = $this->get_field('volume');
 
-	        if ('' != $this->publishing_details) {
-	    	    if ('' != $this->get_field('pages')) {
-			        $this->publishing_details.=':'.$this->fields['pages'];
-		        }
-	        } elseif ('' != $this->get_field('pages')) {
+            if ('' != $this->publishing_details) {
+                if ('' != $this->get_field('pages')) {
+                    $this->publishing_details.=':'.$this->fields['pages'];
+                }
+            } elseif ('' != $this->get_field('pages')) {
                 $this->publishing_details = 'pp. '.$this->fields['pages'];
-	        }
-	        break;
+            }
+            break;
 
-	    case 'incollection':
-	   	    $this->where_published = $this->get_field('booktitle');
-	  	    $this->publishing_details = $this->get_field('volume');
+        case 'incollection':
+            $this->where_published = $this->get_field('booktitle');
+            $this->publishing_details = $this->get_field('volume');
 
-	  	    if ('' != $this->publishing_details) {
-	  		    if ('' != $this->get_field('pages')) {
+            if ('' != $this->publishing_details) {
+                if ('' != $this->get_field('pages')) {
                     $this->publishing_details.= ':'.$this->fields['pages'];
-	  		    }
-	  	    } elseif ('' != $this->get_field('pages')) {
-	  		    $this->publishing_details = ', pp. '.$this->fields['pages'];
-	  	    }
-	        break;
+                }
+            } elseif ('' != $this->get_field('pages')) {
+                $this->publishing_details = ', pp. '.$this->fields['pages'];
+            }
+            break;
 
-	    case 'article':
+        case 'article':
             $journal = $this->get_field('journal');
 
-	        $this->where_published=$journal.' ';
-	        $this->publishing_details=$this->get_field('volume');
+            $this->where_published=$journal.' ';
+            $this->publishing_details=$this->get_field('volume');
 
-	        if ('' != $this->get_field('number')) {
-	  	        $this->publishing_details.= '('.$this->fields['number'].')';
-	        }
-	        if ('' != $this->publishing_details) {
-		        if ('' != $this->get_field('pages')) {
-			        $this->publishing_details.= ':'.$this->fields['pages'];
-		        }
-	        } elseif ('' != $this->get_field('pages')) {
-		        $this->publishing_details = 'pp. '.$this->fields['pages'];
-	        }
-	        break;
+            if ('' != $this->get_field('number')) {
+                $this->publishing_details.= '('.$this->fields['number'].')';
+            }
+            if ('' != $this->publishing_details) {
+                if ('' != $this->get_field('pages')) {
+                    $this->publishing_details.= ':'.$this->fields['pages'];
+                }
+            } elseif ('' != $this->get_field('pages')) {
+                $this->publishing_details = 'pp. '.$this->fields['pages'];
+            }
+            break;
 
-	    case 'techreport':
-	        $this->where_published=$wbibtechreport;
+        case 'techreport':
+            $this->where_published=$wbibtechreport;
 
-	        if ( '' != $this->get_field('type'))
-	            $this->where_published .= " - ".$this->fields['type'];
-	        $this->where_published .= ", ".$this->get_field('institution');
-	        if ('' != $this->get_field('number')) {
-	  	        $this->publishing_details ='('.$this->fields['number'].')';
-	        }
-	        break;
+            if ( '' != $this->get_field('type'))
+                $this->where_published .= " - ".$this->fields['type'];
+            $this->where_published .= ", ".$this->get_field('institution');
+            if ('' != $this->get_field('number')) {
+                $this->publishing_details ='('.$this->fields['number'].')';
+            }
+            break;
 
-	    case 'mastersthesis':
+        case 'mastersthesis':
             if ( '' != $this->get_field('type'))
                 $this->where_published = $this->fields['type'];
-		    else
+            else
                 $this->where_published=$wbibmastersthesis;
-		    $this->where_published .= ", ".$this->get_field('school');
-	        break;
+            $this->where_published .= ", ".$this->get_field('school');
+            break;
 
-	    case 'phdthesis':
-	        $this->where_published=$wbibphdthesis.", ".$this->get_field('school');
-	        break;
+        case 'phdthesis':
+            $this->where_published=$wbibphdthesis.", ".$this->get_field('school');
+            break;
 
-	    case 'unpublished':
-	        $this->where_published=$wbibunpublished;
-	        break;
+        case 'unpublished':
+            $this->where_published=$wbibunpublished;
+            break;
 
-	    case 'book' :
-	 	    if ( '' != $this->get_field('volume') )
-	  	   	    $this->publishing_details .= "Vol. ".$this->fields['volume'].", ";
+        case 'book' :
+            if ( '' != $this->get_field('volume') )
+                $this->publishing_details .= "Vol. ".$this->fields['volume'].", ";
             if ( '' != $this->get_field('edition') )
-		        $this->publishing_details .= $this->fields['edition'].", ";
-		    $this->publishing_details .= $this->get_field('publisher');
-		    break;
-	    }
+                $this->publishing_details .= $this->fields['edition'].", ";
+            $this->publishing_details .= $this->get_field('publisher');
+            break;
+        }
 
         if ('' != $this->get_field('address'))
-	        $this->publishing_details .= ', '.$this->get_field('address');
+            $this->publishing_details .= ', '.$this->get_field('address');
 
 
         if ('' != $this->get_field('month'))
-	        $this->publishing_details .= ', '.$this->get_field('month');
+            $this->publishing_details .= ', '.$this->get_field('month');
 
-	    if ('' != $this->get_field('year'))
-	        $this->publishing_details .= ', '.$this->get_field('year');
+        if ('' != $this->get_field('year'))
+            $this->publishing_details .= ', '.$this->get_field('year');
         if ($this->publishing_details!="")
             $this->publishing_details .='.';
     }
@@ -288,10 +288,10 @@ class BibTex
     function get_fields($text)
     {
         $fields = array();
-	    $i = 0;
-	    $len = strlen($text);
+        $i = 0;
+        $len = strlen($text);
 
-	    while ($i < $len) {
+        while ($i < $len) {
             $field='';
 
             // look for field name and text separator '='
@@ -349,21 +349,21 @@ class BibTex
                 break;
 
             default: // numbers only or predefined string key
-		        $field.=$ch;
-		        while ($i < $len && ','!=($ch=substr($text,$i,1))) {
-			        if ('}' == $ch) { // hack to fix last entry
-			            break;
-			        }
-			        $field .= $ch;
-			        $i++;
-		        }
+                $field.=$ch;
+                while ($i < $len && ','!=($ch=substr($text,$i,1))) {
+                    if ('}' == $ch) { // hack to fix last entry
+                        break;
+                    }
+                    $field .= $ch;
+                    $i++;
+                }
             }
             if ('' != $field) {
                 array_push($fields,$field);
             }
             $i++; // skip comma
-	    }
-	    return $fields;
+        }
+        return $fields;
     }
 
     function html($id, $prefix)
@@ -374,7 +374,7 @@ class BibTex
         $ref_body = '';
 
         if ( $this->get_field('author') != '')
-	        $ref_body .= $this->get_field('author').". ";
+            $ref_body .= $this->get_field('author').". ";
         else
             $ref_body .= $this->get_field('editor').". ";
 
@@ -388,35 +388,35 @@ class BibTex
                  .'/extensions/WikiBibtex/toggle.js"></script>';
         $output .= $ref_body;
         if ($this->get_field('note') != '') {
-	        $note = $this->get_field('note');
+            $note = $this->get_field('note');
             $output .= '('.$note.') ';
         }
 
         // link for url
         if ($this->get_field('url') != '') {
             $url = $this->get_field('url');
-	        $output .= '<a href="'.$url.'" class="extiw">www</a>&nbsp;&nbsp;&nbsp;';
+            $output .= '<a href="'.$url.'" class="extiw">www</a>&nbsp;&nbsp;&nbsp;';
         }
 
         // like for arxiv
         if ($this->get_field('eprint') != '') {
             $eprint = $this->get_field('eprint');
-	        $output .= '<a href="http://arxiv.org/abs/'.$eprint
+            $output .= '<a href="http://arxiv.org/abs/'.$eprint
                     .'" class="extiw">ar&chi;iv</a>&nbsp;&nbsp;&nbsp;';
         }
 
         // link for doi
         if ($this->get_field('doi') != '') {
-	        $doi = $this->get_field('doi');
-	        $output .= '<a href="http://dx.doi.org/'.$doi
+            $doi = $this->get_field('doi');
+            $output .= '<a href="http://dx.doi.org/'.$doi
                     .'" class="extiw">DOI</a>&nbsp;&nbsp;&nbsp;';
         }
 
         // link for MR
         if ($this->get_field('mrnumber') != '') {
-	        $mr = $this->get_field('mrnumber');
-	        $mr = preg_replace('/^[^\d]*([0-9]+)\s.*$/','$1',$mr);
-	        $output .= '<a href="http://www.ams.org/mathscinet-getitem?mr='.$mr
+            $mr = $this->get_field('mrnumber');
+            $mr = preg_replace('/^[^\d]*([0-9]+)\s.*$/','$1',$mr);
+            $output .= '<a href="http://www.ams.org/mathscinet-getitem?mr='.$mr
                     .'" class="extiw">MR</a>&nbsp;&nbsp;&nbsp;';
         }
 

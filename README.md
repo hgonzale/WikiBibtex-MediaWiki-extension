@@ -45,22 +45,27 @@ contain only bibtex entries (and HTML comments).
 
 ## Options
 
-The tag <biblio> accepts the following options:
+The tag `<biblio>` accepts the following options:
 - **force** (default: *false*): The default is to display only cited
   items. Set this option to *true* to display all the items in the
   database.
-- **prefix** (default: *R*): Adds a prefix to the `<div id>` of each
+- **prefix** (default: *empty*): Adds a prefix to the index of each
   entry. Useful when more than `<biblio>` tag is present in a single
   wiki page.
 
+The tag `<cite>` accepts the following option:
+- **prefix** (default: *empty*): Adds a prefix to the index of each
+  entry. Useful when more than `<biblio>` tag is present in a single
+  wiki page. The prefix in each cite must match the prefix in the
+  corresponding `<biblio>` tag.
 
 ## Example
 
 ```
-<some wikitext>
+... wiki text ...
 The result was published in <cite>Gitman:article2014</cite>, and
 similar results appeared in <cite>Hamkins:article2013</cite>
-<more wikitext>
+... more wiki text ...
 
 <biblio force=true>
 @article{Gitman:article2014,
