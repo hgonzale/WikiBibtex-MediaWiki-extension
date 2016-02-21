@@ -353,12 +353,13 @@ class Biblio
         $result = array();
 
         foreach ($refs as $ref) {
-            //$index = $ref['index'];
+            $index = $ref['index'];
             $key = $ref['key'];
             $text = $ref['text'];
             $vkey = '<span style="color:#aaa">['.$key.']</span>';
-            //$result[] = '<li id="bibkey_'.$key.'" value="'.$index.'">'. $text .'</li>';
-            $result[] = '<li id="bibkey_'.$key.'">'. $text .'</li>';
+            $result[] = '<li id="bibkey_'.$key.'"'
+                      . 'style="list-style:none;padding-left:0.5em;text-indent:-3em;">'
+                      . '['. $prefix . $index . ']&nbsp;' . $text .'</li>';
         }
 
         return $err_msg .'<ol>' . implode ("", $result) . '</ol>';
