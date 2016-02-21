@@ -130,6 +130,7 @@ class BibTex
     {
         //change '' to " because parser turns '' into <i>
         $title = preg_replace('/\'\'/','"',$title);
+        $title = $this->parse_math($title);
         $title = $parser->recursiveTagParse($title);
         $title = $this->parse_brackets($title);
         return $title;
@@ -144,21 +145,50 @@ class BibTex
 
         $out = '';
         while ($i < $len) {
-          // current character
-          $ch = $text[$i];
-          $i++;
-          if ($ch == '{') {
-            // new match is found
-            if ($count)
-              $out .= $ch;
-            $count++;
-          } elseif ($ch == '}') {
-            $count--;
-            if ($count)
-              $out .= $ch;
-          } else {
-            $out .= $ch;
-          }
+            // current character
+            $ch = $text[$i];
+            $i++;
+            if ($ch == '{') {
+                // new match is found
+                if ($count)
+                    $out .= $ch;
+                $count++;
+            } elseif ($ch == '}') {
+                $count--;
+                if ($count)
+                    $out .= $ch;
+            } else {
+                $out .= $ch;
+            }
+        }
+
+        return $out;
+    }
+
+    function parse_math($text)
+    {
+        $i = 0; // characters in $text counter
+        $len = strlen($text);
+        $count = 0;
+
+        $out = '';
+        while ($i < $len) {
+            // current character
+            $ch = $text[$i];
+            $i++;
+            if ($ch == '$') {
+                if ($count == 0) {
+                    $out .= '<math>';
+                    $count++;
+                }
+                elseif ($count == 1) {
+                    $out .= '</math>';
+                    $count--;
+                }
+            }
+            else {
+                $out .= $ch;
+            }
         }
 
         return $out;
